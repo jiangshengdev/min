@@ -19,6 +19,11 @@ SECTIONS {
         _rodata_end = .;
     }
 
+    .eh_frame : {
+        *(.eh_frame)
+        . = ALIGN(4K);
+    }
+
     .data : {
         _data_start = .;
         *(.data.stack)
