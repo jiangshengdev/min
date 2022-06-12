@@ -1,6 +1,8 @@
 use core::panic::PanicInfo;
 
+use crate::test;
+
 #[panic_handler]
 fn panic(_info: &PanicInfo) -> ! {
-    loop {}
+    test::exit();
 }

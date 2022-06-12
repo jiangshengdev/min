@@ -6,10 +6,11 @@ use core::arch::global_asm;
 
 mod heap;
 mod panic;
+mod test;
 
 global_asm!(include_str!("entry.s"));
 
 #[no_mangle]
 fn main() {
-    loop {}
+    test::exit();
 }

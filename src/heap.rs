@@ -3,6 +3,8 @@ use core::cell::UnsafeCell;
 use core::ptr::null_mut;
 use core::sync::atomic::{AtomicUsize, Ordering::SeqCst};
 
+use crate::test;
+
 const ARENA_SIZE: usize = 128 * 1024;
 const MAX_SUPPORTED_ALIGN: usize = 4096;
 
@@ -20,7 +22,7 @@ static ALLOCATOR: SimpleAllocator = SimpleAllocator {
 
 #[alloc_error_handler]
 fn alloc_error(_layout: Layout) -> ! {
-    loop {}
+    test::exit();
 }
 
 unsafe impl Sync for SimpleAllocator {}
