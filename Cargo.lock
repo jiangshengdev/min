@@ -3,5 +3,5 @@
 version = 3
 
 [[package]]
-name = "min-sys"
+name = "min"
 version = "0.1.0"

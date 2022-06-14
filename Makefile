@@ -1,4 +1,4 @@
-ELF := target/riscv64gc-unknown-none-elf/debug/min-sys
+ELF := target/riscv64gc-unknown-none-elf/debug/min
 BIN := $(ELF).bin
 
 clean:
