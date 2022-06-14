@@ -6,7 +6,7 @@ clean:
 
 build:
 	@cargo build
-	@rust-objcopy -S -O binary \
+	@rust-objcopy -O binary -S \
 		$(ELF) $(BIN)
 
 run: build
@@ -31,6 +31,6 @@ size:
 	@rust-size -A -x $(ELF)
 
 dump:
-	@rust-objdump -S $(ELF)
+	@rust-objdump -C -S $(ELF)
 
 all: clean build symbol size dump
