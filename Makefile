@@ -25,12 +25,12 @@ client:
 		-ex "target remote localhost:1234"
 
 symbol:
-	@rust-nm -g -v -x $(ELF)
+	@rust-nm -C -g -v -x $(ELF)
 
 size:
 	@rust-size -A -x $(ELF)
 
 dump:
-	@rust-objdump -C -S $(ELF)
+	@rust-objdump -C -S $(ELF) > min.disasm
 
 all: clean build symbol size dump
