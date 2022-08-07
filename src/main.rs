@@ -9,12 +9,14 @@ use core::arch::global_asm;
 mod first;
 mod heap;
 mod panic;
+mod second;
 mod test;
 
 global_asm!(include_str!("entry.s"));
 
 #[no_mangle]
 fn main() {
-    first::test::basics();
+    first::test::all();
+    second::test::all();
     test::exit();
 }

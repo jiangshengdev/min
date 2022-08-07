@@ -53,6 +53,10 @@ impl Drop for List {
 pub mod test {
     use super::List;
 
+    pub fn all() {
+        basics();
+    }
+
     pub fn basics() {
         let mut list = List::new();
 
