@@ -9,28 +9,10 @@ pub struct BinaryHeap<T> {
     data: Vec<T>,
 }
 
-impl<T> BinaryHeap<T>
-where
-    T: Copy + Ord,
-{
+impl<T: Ord> BinaryHeap<T> {
     /// Creates an empty `BinaryHeap` as a min-heap.
     pub fn new() -> Self {
         BinaryHeap { data: vec![] }
-    }
-
-    /// Converts a `Vec<T>` into a `BinaryHeap<T>`.
-    fn from(vec: Vec<T>) -> Self {
-        let mut heap = BinaryHeap { data: vec };
-        heap.rebuild();
-        heap
-    }
-
-    fn rebuild(&mut self) {
-        let mut index = self.len() / 2;
-        while index > 0 {
-            index -= 1;
-            self.sift_down(index);
-        }
     }
 
     /// Pushes an item onto the binary heap.
@@ -77,12 +59,10 @@ where
     fn sift_up(&mut self, pos: usize) {
         let mut index = pos;
         let items = &mut self.data;
-        let item = *items.get(index).unwrap();
 
         while index > 0 {
             let parent_index = (index - 1) / 2;
-            let parent = *items.get(parent_index).unwrap();
-            if parent > item {
+            if items[parent_index] > items[index] {
                 // The parent is larger. Swap positions.
                 items.swap(index, parent_index);
                 index = parent_index;
@@ -98,26 +78,23 @@ where
     fn sift_down(&mut self, pos: usize) {
         let mut index = pos;
         let items = &mut self.data;
-        let item = *items.get(index).unwrap();
         let size = items.len();
         let half_size = size / 2;
 
         while index < half_size {
             let left_index = index * 2 + 1;
-            let left = items.get(left_index);
             let right_index = left_index + 1;
-            let right = items.get(right_index);
 
             // If the left or right node is smaller, swap with the smaller of those.
-            if *left.unwrap() < item {
-                if right_index < size && *right.unwrap() < *left.unwrap() {
+            if items[left_index] < items[index] {
+                if right_index < size && items[right_index] < items[left_index] {
                     items.swap(index, right_index);
                     index = right_index;
                 } else {
                     items.swap(index, left_index);
                     index = left_index;
                 }
-            } else if right_index < size && *right.unwrap() < item {
+            } else if right_index < size && items[right_index] < items[index] {
                 items.swap(index, right_index);
                 index = right_index;
             } else {
@@ -126,22 +103,29 @@ where
             }
         }
     }
+
+    fn rebuild(&mut self) {
+        let mut index = self.len() / 2;
+        while index > 0 {
+            index -= 1;
+            self.sift_down(index);
+        }
+    }
 }
 
+impl<T: Ord> From<Vec<T>> for BinaryHeap<T> {
+    /// Converts a `Vec<T>` into a `BinaryHeap<T>`.
+    fn from(vec: Vec<T>) -> Self {
+        let mut heap = BinaryHeap { data: vec };
+        heap.rebuild();
+        heap
+    }
+}
+
+/// An owning iterator over the elements of a `BinaryHeap`.
 #[derive(Clone)]
 pub struct IntoIter<T> {
     iter: vec::IntoIter<T>,
-}
-
-impl<T> IntoIterator for BinaryHeap<T> {
-    type Item = T;
-    type IntoIter = IntoIter<T>;
-
-    fn into_iter(self) -> Self::IntoIter {
-        IntoIter {
-            iter: self.data.into_iter(),
-        }
-    }
 }
 
 impl<T> Iterator for IntoIter<T> {
@@ -155,6 +139,20 @@ impl<T> Iterator for IntoIter<T> {
     #[inline]
     fn size_hint(&self) -> (usize, Option<usize>) {
         self.iter.size_hint()
+    }
+}
+
+impl<T> IntoIterator for BinaryHeap<T> {
+    type Item = T;
+    type IntoIter = IntoIter<T>;
+
+    /// Creates a consuming iterator, that is, one that moves each value out of
+    /// the binary heap in arbitrary order. The binary heap cannot be used
+    /// after calling this.
+    fn into_iter(self) -> Self::IntoIter {
+        IntoIter {
+            iter: self.data.into_iter(),
+        }
     }
 }
 
