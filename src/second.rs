@@ -105,7 +105,7 @@ impl<'a, T> Iterator for IterMut<'a, T> {
     }
 }
 
-pub mod test {
+pub mod tests {
     use super::List;
 
     pub fn all() {

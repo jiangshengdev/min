@@ -6,6 +6,7 @@ extern crate alloc;
 
 use core::arch::global_asm;
 
+mod binary_heap;
 mod first;
 mod heap;
 mod panic;
@@ -16,7 +17,8 @@ global_asm!(include_str!("entry.s"));
 
 #[no_mangle]
 fn main() {
-    first::test::all();
-    second::test::all();
+    first::tests::all();
+    second::tests::all();
+    binary_heap::tests::all();
     test::exit();
 }

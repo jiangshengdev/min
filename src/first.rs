@@ -50,7 +50,7 @@ impl Drop for List {
     }
 }
 
-pub mod test {
+pub mod tests {
     use super::List;
 
     pub fn all() {
