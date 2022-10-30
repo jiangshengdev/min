@@ -1,5 +1,6 @@
-use alloc::boxed::Box;
 use core::mem;
+
+use alloc::boxed::Box;
 
 pub struct List {
     head: Link,
