@@ -107,6 +107,46 @@ impl<T> IntoIterator for Stack<T> {
     }
 }
 
+pub struct Iter<'a, T> {
+    next: Option<&'a Node<T>>,
+}
+
+impl<T> Stack<T> {
+    pub fn iter(&self) -> Iter<T> {
+        let head = match &self.head {
+            Some(boxed_node) => {
+                let node = &**boxed_node;
+                Some(node)
+            }
+            None => None,
+        };
+
+        Iter { next: head }
+    }
+}
+
+impl<'a, T> Iterator for Iter<'a, T> {
+    type Item = &'a T;
+    fn next(&mut self) -> Option<Self::Item> {
+        match self.next {
+            Some(next) => {
+                let next_next = match &next.next {
+                    Some(boxed_node) => {
+                        let node = &**boxed_node;
+                        Some(node)
+                    }
+                    None => None,
+                };
+
+                self.next = next_next;
+                let elem = &next.elem;
+                Some(elem)
+            }
+            None => None,
+        }
+    }
+}
+
 pub mod tests {
     use super::*;
 
@@ -114,6 +154,7 @@ pub mod tests {
         test_basics();
         test_peek();
         test_into_iter();
+        test_iter();
     }
 
     fn test_basics() {
@@ -177,5 +218,17 @@ pub mod tests {
         assert_eq!(iter.next(), Some(2));
         assert_eq!(iter.next(), Some(1));
         assert_eq!(iter.next(), None);
+    }
+
+    fn test_iter() {
+        let mut stack = Stack::new();
+        stack.push(1);
+        stack.push(2);
+        stack.push(3);
+
+        let mut iter = stack.iter();
+        assert_eq!(iter.next(), Some(&3));
+        assert_eq!(iter.next(), Some(&2));
+        assert_eq!(iter.next(), Some(&1));
     }
 }
