@@ -4,6 +4,7 @@
 use alloc::boxed::Box;
 
 #[derive(Debug)]
+/// A stack implemented with a linked list.
 pub struct Stack<T> {
     head: Link<T>,
 }
@@ -17,11 +18,21 @@ struct Node<T> {
     next: Link<T>,
 }
 
+impl<T> Default for Stack<T> {
+    /// Creates an empty [`Stack`].
+    #[inline]
+    fn default() -> Self {
+        Stack::new()
+    }
+}
+
 impl<T> Stack<T> {
+    /// Creates an empty [`Stack`].
     pub fn new() -> Self {
         Stack { head: None }
     }
 
+    /// Adds an element first in the stack.
     pub fn push(&mut self, elem: T) {
         let old_head: Link<T> = self.head.take();
 
@@ -35,6 +46,8 @@ impl<T> Stack<T> {
         self.head = new_head;
     }
 
+    /// Removes the first element and returns it, or [`None`] if the stack is
+    /// empty.
     pub fn pop(&mut self) -> Option<T> {
         let old_head: Link<T> = self.head.take();
 
@@ -50,6 +63,7 @@ impl<T> Stack<T> {
         }
     }
 
+    /// Returns the first element in the stack, or [`None`] if it is empty.
     pub fn peek(&self) -> Option<&T> {
         let head: &Link<T> = &self.head;
 
@@ -62,6 +76,8 @@ impl<T> Stack<T> {
         }
     }
 
+    /// Returns a mutable reference to the first element in the stack, or
+    /// [`None`] if it is empty.
     pub fn peek_mut(&mut self) -> Option<&mut T> {
         let head: &mut Link<T> = &mut self.head;
 
@@ -85,6 +101,7 @@ impl<T> Drop for Stack<T> {
     }
 }
 
+/// An owning iterator over the elements of a [`Stack`].
 pub struct IntoIter<T> {
     stack: Stack<T>,
 }
@@ -102,6 +119,7 @@ impl<T> IntoIterator for Stack<T> {
     type Item = T;
     type IntoIter = IntoIter<T>;
 
+    /// Consumes the stack into an iterator yielding elements by value.
     fn into_iter(self) -> Self::IntoIter {
         IntoIter { stack: self }
     }
@@ -113,7 +131,9 @@ pub struct Iter<'a, T> {
 
 impl<T> Stack<T> {
     pub fn iter(&self) -> Iter<T> {
-        let head = match &self.head {
+        let head: &Link<T> = &self.head;
+
+        let next = match head {
             Some(boxed_node) => {
                 let node = &**boxed_node;
                 Some(node)
@@ -121,25 +141,30 @@ impl<T> Stack<T> {
             None => None,
         };
 
-        Iter { next: head }
+        Iter { next }
     }
 }
 
 impl<'a, T> Iterator for Iter<'a, T> {
     type Item = &'a T;
+
     fn next(&mut self) -> Option<Self::Item> {
-        match self.next {
-            Some(next) => {
-                let next_next = match &next.next {
+        let old_next = self.next;
+
+        match old_next {
+            Some(old_node) => {
+                let next_next: &Link<T> = &old_node.next;
+
+                let new_next = match next_next {
                     Some(boxed_node) => {
-                        let node = &**boxed_node;
-                        Some(node)
+                        let new_node = &**boxed_node;
+                        Some(new_node)
                     }
                     None => None,
                 };
 
-                self.next = next_next;
-                let elem = &next.elem;
+                self.next = new_next;
+                let elem = &old_node.elem;
                 Some(elem)
             }
             None => None,
