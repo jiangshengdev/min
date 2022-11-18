@@ -190,27 +190,27 @@ pub mod tests {
     fn test_basics() {
         let mut stack = Stack::new();
 
-        // Check empty list behaves right
+        // Check empty stack behaves right.
         assert_eq!(stack.pop(), None);
 
-        // Populate list
+        // Populate stack.
         stack.push(1);
         stack.push(2);
         stack.push(3);
 
-        // Check normal removal
+        // Check normal removal.
         assert_eq!(stack.pop(), Some(3));
         assert_eq!(stack.pop(), Some(2));
 
-        // Push some more just to make sure nothing's corrupted
+        // Push some more just to make sure nothing's corrupted.
         stack.push(4);
         stack.push(5);
 
-        // Check normal removal
+        // Check normal removal.
         assert_eq!(stack.pop(), Some(5));
         assert_eq!(stack.pop(), Some(4));
 
-        // Check exhaustion
+        // Check exhaustion.
         assert_eq!(stack.pop(), Some(1));
         assert_eq!(stack.pop(), None);
     }
