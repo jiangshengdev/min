@@ -1,6 +1,5 @@
-use core::mem;
-
 use alloc::boxed::Box;
+use core::mem;
 
 pub struct List {
     head: Link,
@@ -58,7 +57,7 @@ pub mod tests {
         basics();
     }
 
-    pub fn basics() {
+    fn basics() {
         let mut list = List::new();
 
         // Check empty list behaves right

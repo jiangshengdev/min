@@ -97,6 +97,7 @@ impl<T> List<T> {
 
 impl<'a, T> Iterator for IterMut<'a, T> {
     type Item = &'a mut T;
+
     fn next(&mut self) -> Option<Self::Item> {
         self.next.take().map(|node| {
             self.next = node.next.as_deref_mut();
@@ -116,7 +117,7 @@ pub mod tests {
         iter_mut();
     }
 
-    pub fn basics() {
+    fn basics() {
         let mut list = List::new();
 
         // Check empty list behaves right
@@ -144,7 +145,7 @@ pub mod tests {
         assert_eq!(list.pop(), None);
     }
 
-    pub fn peek() {
+    fn peek() {
         let mut list = List::new();
         assert_eq!(list.peek(), None);
         assert_eq!(list.peek_mut(), None);
@@ -161,7 +162,7 @@ pub mod tests {
         assert_eq!(list.pop(), Some(42));
     }
 
-    pub fn into_iter() {
+    fn into_iter() {
         let mut list = List::new();
         list.push(1);
         list.push(2);
@@ -174,7 +175,7 @@ pub mod tests {
         assert_eq!(iter.next(), None);
     }
 
-    pub fn iter() {
+    fn iter() {
         let mut list = List::new();
         list.push(1);
         list.push(2);
@@ -184,10 +185,9 @@ pub mod tests {
         assert_eq!(iter.next(), Some(&3));
         assert_eq!(iter.next(), Some(&2));
         assert_eq!(iter.next(), Some(&1));
-        assert_eq!(iter.next(), None);
     }
 
-    pub fn iter_mut() {
+    fn iter_mut() {
         let mut list = List::new();
         list.push(1);
         list.push(2);
@@ -197,6 +197,5 @@ pub mod tests {
         assert_eq!(iter.next(), Some(&mut 3));
         assert_eq!(iter.next(), Some(&mut 2));
         assert_eq!(iter.next(), Some(&mut 1));
-        assert_eq!(iter.next(), None);
     }
 }
