@@ -12,15 +12,17 @@ build:
 run: build
 	@qemu-system-riscv64 -M virt \
 		-display none -serial stdio \
+		-smp cores=2 \
 		-device loader,file=$(BIN),addr=0x80000000
 
 server: build
 	@qemu-system-riscv64 -s -S -M virt \
 		-display none -serial stdio \
+		-smp cores=2 \
 		-device loader,file=$(BIN),addr=0x80000000
 
 client:
-	@riscv64-unknown-elf-gdb-py \
+	@riscv64-unknown-elf-gdb \
 		-ex "file $(ELF)" \
 		-ex "target remote localhost:1234"
 
